@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Blush Rose palette (from mockup) */
+  /* Blush Rose palette */
   --color-paper: #fbf5f2; /* warm blush white */
   --color-ink: #2e2228; /* deep plum charcoal */
   --color-coral: #d65d8a; /* raspberry rose accent */
@@ -18,7 +18,7 @@ body {
   font-family: var(--font-body);
 }
 
-/* Hide scrollbars (mockup parity) */
+/* Hide scrollbars */
 ::-webkit-scrollbar {
   width: 0;
 }

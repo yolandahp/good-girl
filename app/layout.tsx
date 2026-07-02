@@ -22,7 +22,7 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ledger",
+  title: "Be the Good Girl",
   description: "Turn daily habits into points, and points into real rewards.",
 };
 
