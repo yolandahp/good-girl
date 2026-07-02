@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /* Blush Rose palette (from mockup) */
+  --color-paper: #fbf5f2; /* warm blush white */
+  --color-ink: #2e2228; /* deep plum charcoal */
+  --color-coral: #d65d8a; /* raspberry rose accent */
+  --color-line: #efe2dd; /* hairline borders */
+  --color-muted: #9e8a90; /* secondary text */
+
+  /* Fonts (wired via next/font in layout.tsx) */
+  --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-body: var(--font-inter), "Inter", sans-serif;
+  --font-mono: var(--font-space-mono), "Space Mono", monospace;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+/* Hide scrollbars (mockup parity) */
+::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Focus ring */
+.focusable:focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+}
+
+/* Progress bar easing */
+.prog {
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prog {
+    transition: none;
+  }
+}
