@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from "react";
+
 import { type RewardView } from "@/app/rewards/queries";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { cn } from "@/lib/utils";
 
+import { EditRewardForm } from "./edit-reward-form";
 import { RedeemButton } from "./redeem-button";
 
 export function RewardCard({
@@ -11,7 +16,16 @@ export function RewardCard({
   reward: RewardView;
   balance: number;
 }) {
+  const [editing, setEditing] = useState(false);
   const redeemed = reward.redeemedAt !== null;
+
+  if (editing) {
+    return (
+      <div className="rounded-2xl border border-ink bg-white p-5">
+        <EditRewardForm reward={reward} onDone={() => setEditing(false)} />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -23,7 +37,19 @@ export function RewardCard({
     >
       <div className="flex items-start justify-between">
         <span className="text-3xl">{reward.emoji ?? "🎁"}</span>
-        <span className="font-mono text-sm font-bold">{reward.cost}</span>
+        <div className="flex items-center gap-2">
+          {!redeemed ? (
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              aria-label="Edit reward"
+              className="focusable text-xs font-medium text-muted hover:text-ink"
+            >
+              Edit
+            </button>
+          ) : null}
+          <span className="font-mono text-sm font-bold">{reward.cost}</span>
+        </div>
       </div>
 
       <p className="mt-3 font-display font-semibold">{reward.name}</p>

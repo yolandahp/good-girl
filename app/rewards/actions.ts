@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { and, eq, sql } from "drizzle-orm";
-import { z } from "zod";
 
 import { db } from "@/db/client";
 import { ledger, rewards } from "@/db/schema";
 import { type ActionState } from "@/lib/action-state";
+import { uuidField } from "@/lib/form";
 import { appendLedger } from "@/lib/points/ledger";
 import { checkRedeemable } from "@/lib/points/redeem";
 import { getCurrentUser } from "@/lib/supabase/auth";
@@ -30,12 +30,48 @@ export async function createReward(formData: FormData): Promise<ActionState> {
   return {};
 }
 
+export async function editReward(formData: FormData): Promise<ActionState> {
+  const user = await getCurrentUser();
+  const rewardId = uuidField(formData, "rewardId");
+  if (!rewardId) return { error: "Reward not found." };
+
+  const parsed = createRewardSchema.safeParse({
+    name: formData.get("name"),
+    cost: formData.get("cost"),
+    emoji: formData.get("emoji"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid reward." };
+  }
+
+  await db
+    .update(rewards)
+    .set(parsed.data)
+    .where(and(eq(rewards.id, rewardId), eq(rewards.userId, user.id)));
+
+  revalidatePath("/rewards");
+  return {};
+}
+
+export async function deleteReward(formData: FormData): Promise<ActionState> {
+  const user = await getCurrentUser();
+  const rewardId = uuidField(formData, "rewardId");
+  if (!rewardId) return { error: "Reward not found." };
+
+  // Any redemption ledger row is kept, so spent points stay spent.
+  await db
+    .delete(rewards)
+    .where(and(eq(rewards.id, rewardId), eq(rewards.userId, user.id)));
+
+  revalidatePath("/rewards");
+  return {};
+}
+
 export async function redeemReward(formData: FormData): Promise<ActionState> {
   const user = await getCurrentUser();
 
-  const parsedId = z.uuid().safeParse(formData.get("rewardId"));
-  if (!parsedId.success) return { error: "Reward not found." };
-  const rewardId = parsedId.data;
+  const rewardId = uuidField(formData, "rewardId");
+  if (!rewardId) return { error: "Reward not found." };
 
   const result = await db.transaction(async (tx) => {
     // Serialize redemptions per user so two concurrent redeems can't both pass

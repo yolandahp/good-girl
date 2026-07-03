@@ -1,14 +1,22 @@
 "use client";
 
+import { useState } from "react";
+
 import { archiveTask } from "@/app/tasks/actions";
 import { type TaskView } from "@/app/tasks/queries";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 import { CompleteTaskButton } from "./complete-task-button";
+import { EditTaskForm } from "./edit-task-form";
 
 export function TaskRow({ task }: { task: TaskView }) {
+  const [editing, setEditing] = useState(false);
   const lockCompleted = task.done && task.type === "oneoff";
+
+  if (editing) {
+    return <EditTaskForm task={task} onDone={() => setEditing(false)} />;
+  }
 
   return (
     <div
@@ -46,16 +54,26 @@ export function TaskRow({ task }: { task: TaskView }) {
         +{task.points}
       </span>
 
-      <form action={archiveTask}>
-        <input type="hidden" name="taskId" value={task.id} />
+      <div className="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
         <button
-          type="submit"
-          aria-label="Archive task"
-          className="focusable text-muted opacity-0 transition group-hover:opacity-100 hover:text-ink"
+          type="button"
+          onClick={() => setEditing(true)}
+          aria-label="Edit task"
+          className="focusable text-muted hover:text-ink"
         >
-          ×
+          Edit
         </button>
-      </form>
+        <form action={archiveTask}>
+          <input type="hidden" name="taskId" value={task.id} />
+          <button
+            type="submit"
+            aria-label="Archive task"
+            className="focusable text-muted hover:text-ink"
+          >
+            ×
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

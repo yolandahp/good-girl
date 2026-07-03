@@ -40,7 +40,7 @@ export default async function BudgetsPage() {
         ) : (
           <div className="space-y-4">
             {budgets.map((budget) => (
-              <BudgetCard key={budget.id} budget={budget} showLog />
+              <BudgetCard key={budget.id} budget={budget} showLog editable />
             ))}
           </div>
         )}

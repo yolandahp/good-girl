@@ -1,8 +1,10 @@
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { budgetLogs, budgets, type Budget } from "@/db/schema";
 import { periodBounds, todayUTC } from "@/lib/points/period";
+
+export type BudgetLogEntry = { id: string; logDate: string; amount: number };
 
 export type BudgetView = Budget & {
   periodStart: string;
@@ -11,11 +13,14 @@ export type BudgetView = Budget & {
   periodTotal: number;
   /** Sum of logs made today. */
   todayTotal: number;
+  /** Individual logs in the current period, most recent first. */
+  entries: BudgetLogEntry[];
 };
 
 /**
- * Budgets for a user with their current-period and today totals, for rendering
- * the progress + pacing bars. Newest budget first.
+ * Budgets for a user with their current-period totals and individual entries,
+ * for rendering the progress bars and the editable log list. Newest budget
+ * first.
  */
 export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
   const today = todayUTC();
@@ -31,23 +36,30 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
       const { start, end } = periodBounds(today, budget.period);
 
       const logs = await db
-        .select({ logDate: budgetLogs.logDate, amount: budgetLogs.amount })
+        .select({
+          id: budgetLogs.id,
+          logDate: budgetLogs.logDate,
+          amount: budgetLogs.amount,
+        })
         .from(budgetLogs)
         .where(
           and(
             eq(budgetLogs.budgetId, budget.id),
             eq(budgetLogs.userId, userId),
             gte(budgetLogs.logDate, start),
+            lte(budgetLogs.logDate, end),
           ),
-        );
+        )
+        .orderBy(desc(budgetLogs.logDate), desc(budgetLogs.createdAt));
 
       let periodTotal = 0;
       let todayTotal = 0;
-      for (const log of logs) {
+      const entries: BudgetLogEntry[] = logs.map((log) => {
         const amount = Number(log.amount);
         periodTotal += amount;
         if (log.logDate === today) todayTotal += amount;
-      }
+        return { id: log.id, logDate: log.logDate, amount };
+      });
 
       return {
         ...budget,
@@ -55,6 +67,7 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
         periodEnd: end,
         periodTotal,
         todayTotal,
+        entries,
       };
     }),
   );

@@ -2,21 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
-import { z } from "zod";
 
 import { db } from "@/db/client";
 import { tasks } from "@/db/schema";
 import { type ActionState } from "@/lib/action-state";
+import { uuidField } from "@/lib/form";
 import { appendLedger } from "@/lib/points/ledger";
 import { taskCompletionEntry } from "@/lib/points/task-entry";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { createTaskSchema } from "@/lib/validation/task";
-
-/** Reads a task id from form data, or null if it isn't a valid uuid. */
-function taskIdFrom(formData: FormData): string | null {
-  const parsed = z.uuid().safeParse(formData.get("taskId"));
-  return parsed.success ? parsed.data : null;
-}
 
 export async function createTask(formData: FormData): Promise<ActionState> {
   const user = await getCurrentUser();
@@ -37,11 +31,35 @@ export async function createTask(formData: FormData): Promise<ActionState> {
   return {};
 }
 
+export async function editTask(formData: FormData): Promise<ActionState> {
+  const user = await getCurrentUser();
+  const taskId = uuidField(formData, "taskId");
+  if (!taskId) return { error: "Task not found." };
+
+  const parsed = createTaskSchema.safeParse({
+    title: formData.get("title"),
+    points: formData.get("points"),
+    type: formData.get("type"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid task." };
+  }
+
+  await db
+    .update(tasks)
+    .set(parsed.data)
+    .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)));
+
+  revalidatePath("/tasks");
+  revalidatePath("/dashboard");
+  return {};
+}
+
 export async function completeTask(
   formData: FormData,
 ): Promise<{ awarded: boolean }> {
   const user = await getCurrentUser();
-  const taskId = taskIdFrom(formData);
+  const taskId = uuidField(formData, "taskId");
   if (!taskId) return { awarded: false };
 
   const [task] = await db
@@ -61,7 +79,7 @@ export async function completeTask(
 
 export async function archiveTask(formData: FormData) {
   const user = await getCurrentUser();
-  const taskId = taskIdFrom(formData);
+  const taskId = uuidField(formData, "taskId");
   if (!taskId) return;
 
   await db
