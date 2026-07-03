@@ -1,4 +1,5 @@
 import { type budgetPeriod } from "@/db/schema";
+import { APP_TIMEZONE } from "@/lib/config";
 
 export type Period = (typeof budgetPeriod.enumValues)[number];
 
@@ -23,9 +24,11 @@ export function addDays(date: Date, days: number): Date {
   return next;
 }
 
-/** Today's calendar date in UTC, as `YYYY-MM-DD`. */
-export function todayUTC(): string {
-  return new Date().toISOString().slice(0, 10);
+/** Today's calendar date in the app timezone, as `YYYY-MM-DD`. */
+export function today(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: APP_TIMEZONE }).format(
+    new Date(),
+  );
 }
 
 /**

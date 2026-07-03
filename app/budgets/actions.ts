@@ -8,7 +8,7 @@ import { db } from "@/db/client";
 import { budgetLogs, budgets } from "@/db/schema";
 import { type ActionState } from "@/lib/action-state";
 import { uuidField } from "@/lib/form";
-import { todayUTC } from "@/lib/points/period";
+import { today } from "@/lib/points/period";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import {
   createBudgetSchema,
@@ -112,7 +112,7 @@ export async function logEntry(formData: FormData): Promise<ActionState> {
   await db.insert(budgetLogs).values({
     userId: user.id,
     budgetId: budget.id,
-    logDate: todayUTC(),
+    logDate: today(),
     amount: parsed.data.amount.toString(),
   });
 

@@ -4,7 +4,7 @@ import { type TaskView } from "@/app/tasks/queries";
 import { db } from "@/db/client";
 import { scheduledTasks, tasks } from "@/db/schema";
 import { monthGrid } from "@/lib/calendar";
-import { todayUTC } from "@/lib/points/period";
+import { today } from "@/lib/points/period";
 
 export type ScheduledChip = {
   scheduleId: string;
@@ -73,7 +73,7 @@ export async function getMonthSchedule(
  * be scheduled on the same day twice).
  */
 export async function getScheduledToday(userId: string): Promise<TaskView[]> {
-  const today = todayUTC();
+  const todayStr = today();
 
   const rows = await db
     .select(getTableColumns(tasks))
@@ -83,7 +83,7 @@ export async function getScheduledToday(userId: string): Promise<TaskView[]> {
       and(
         eq(scheduledTasks.taskId, tasks.id),
         eq(scheduledTasks.userId, userId),
-        eq(scheduledTasks.scheduledDate, today),
+        eq(scheduledTasks.scheduledDate, todayStr),
         // Not yet completed for today — completing marks this row done.
         isNull(scheduledTasks.completedAt),
       ),

@@ -9,7 +9,7 @@ import { type ActionState } from "@/lib/action-state";
 import { uuidField } from "@/lib/form";
 import { appendLedger } from "@/lib/points/ledger";
 import { taskCompletionEntry } from "@/lib/points/task-entry";
-import { todayUTC } from "@/lib/points/period";
+import { today } from "@/lib/points/period";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { createTaskSchema } from "@/lib/validation/task";
 
@@ -81,7 +81,7 @@ export async function completeTask(
       and(
         eq(scheduledTasks.taskId, task.id),
         eq(scheduledTasks.userId, user.id),
-        eq(scheduledTasks.scheduledDate, todayUTC()),
+        eq(scheduledTasks.scheduledDate, today()),
         isNull(scheduledTasks.completedAt),
       ),
     );

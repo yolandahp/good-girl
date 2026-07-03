@@ -2,7 +2,7 @@ import { and, desc, eq, gte, lte } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { budgetLogs, budgets, type Budget } from "@/db/schema";
-import { periodBounds, todayUTC, toUTCDate } from "@/lib/points/period";
+import { periodBounds, today, toUTCDate } from "@/lib/points/period";
 
 export type BudgetLogEntry = { id: string; logDate: string; amount: number };
 
@@ -34,7 +34,7 @@ function daysBetween(a: string, b: string): number {
  * first.
  */
 export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
-  const today = todayUTC();
+  const todayStr = today();
 
   const rows = await db
     .select()
@@ -44,7 +44,7 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
 
   return Promise.all(
     rows.map(async (budget) => {
-      const { start, end } = periodBounds(today, budget.period);
+      const { start, end } = periodBounds(todayStr, budget.period);
 
       const logs = await db
         .select({
@@ -68,7 +68,7 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
       const entries: BudgetLogEntry[] = logs.map((log) => {
         const amount = Number(log.amount);
         periodTotal += amount;
-        if (log.logDate === today) todayTotal += amount;
+        if (log.logDate === todayStr) todayTotal += amount;
         return { id: log.id, logDate: log.logDate, amount };
       });
 
@@ -78,7 +78,7 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
         periodEnd: end,
         periodTotal,
         todayTotal,
-        dayOfPeriod: daysBetween(start, today) + 1,
+        dayOfPeriod: daysBetween(start, todayStr) + 1,
         periodDays: daysBetween(start, end) + 1,
         entries,
       };

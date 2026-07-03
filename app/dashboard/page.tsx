@@ -4,6 +4,7 @@ import { AppShell } from "@/components/app-shell";
 import { BudgetPace } from "@/components/dashboard/budget-pace";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
 import { WalletCard } from "@/components/dashboard/wallet-card";
+import { APP_TIMEZONE } from "@/lib/config";
 import { getWalletStats } from "@/lib/points/ledger";
 import { settleClosedPeriods } from "@/lib/points/settlement";
 import { getCurrentUser } from "@/lib/supabase/auth";
@@ -25,6 +26,7 @@ export default async function DashboardPage() {
     weekday: "long",
     day: "numeric",
     month: "long",
+    timeZone: APP_TIMEZONE,
   });
 
   return (

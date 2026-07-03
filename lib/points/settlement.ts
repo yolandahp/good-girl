@@ -9,7 +9,7 @@ import {
 } from "@/db/schema";
 
 import { appendLedger } from "./ledger";
-import { periodBounds, todayUTC } from "./period";
+import { periodBounds, today } from "./period";
 
 export type PeriodSummary = {
   periodStart: string;
@@ -108,7 +108,7 @@ async function settlePeriod(
  * skipped via the unique constraint.
  */
 export async function settleClosedPeriods(userId: string): Promise<void> {
-  const today = todayUTC();
+  const todayStr = today();
 
   const [userBudgets, settledRows] = await Promise.all([
     db.select().from(budgets).where(eq(budgets.userId, userId)),
@@ -137,7 +137,7 @@ export async function settleClosedPeriods(userId: string): Promise<void> {
       );
     if (logs.length === 0) continue;
 
-    for (const summary of closedPeriodSummaries(logs, budget, today)) {
+    for (const summary of closedPeriodSummaries(logs, budget, todayStr)) {
       if (settled.has(`${budget.id}|${summary.periodStart}`)) continue;
       await settlePeriod(budget, summary);
     }

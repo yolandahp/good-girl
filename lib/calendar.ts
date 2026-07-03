@@ -1,4 +1,4 @@
-import { addDays, formatUTC, todayUTC } from "@/lib/points/period";
+import { addDays, formatUTC, today as todayDate } from "@/lib/points/period";
 
 export type CalendarDay = { date: string; inMonth: boolean; isToday: boolean };
 
@@ -11,7 +11,7 @@ function parseMonth(monthStr: string): { year: number; month: number } {
 /** The 42-day (6×7) Monday-first grid covering the month of `monthStr`. */
 export function monthGrid(
   monthStr: string,
-  today: string = todayUTC(),
+  today: string = todayDate(),
 ): CalendarDay[] {
   const { year, month } = parseMonth(monthStr);
   const first = new Date(Date.UTC(year, month, 1));
@@ -48,5 +48,5 @@ export function addMonths(monthStr: string, delta: number): string {
 
 /** Today's month as "YYYY-MM". */
 export function currentMonth(): string {
-  return todayUTC().slice(0, 7);
+  return todayDate().slice(0, 7);
 }
