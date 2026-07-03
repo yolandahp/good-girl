@@ -55,13 +55,7 @@ export function AppShell({
           ))}
         </nav>
         <div className="mt-auto border-t border-line pt-6">
-          <p className="font-mono text-sm">
-            <span className="text-muted">balance</span>{" "}
-            <span className="font-bold">{balance}</span>
-          </p>
-          <div className="mt-3">
-            <SignOutButton />
-          </div>
+          <SignOutButton />
         </div>
       </aside>
 

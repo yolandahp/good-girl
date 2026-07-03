@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { rewards, type Reward } from "@/db/schema";
@@ -23,7 +23,8 @@ export async function getRewardsView(
     db
       .select()
       .from(rewards)
-      .where(eq(rewards.userId, userId))
+      // Redeemed rewards drop off the list — the spend stays in the ledger.
+      .where(and(eq(rewards.userId, userId), isNull(rewards.redeemedAt)))
       .orderBy(desc(rewards.createdAt)),
   ]);
 
