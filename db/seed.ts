@@ -56,11 +56,12 @@ async function main() {
     await tx.delete(rewards).where(eq(rewards.userId, userId));
 
     await tx.insert(tasks).values([
-      { userId, title: "Build & deploy app A", points: 25, type: "oneoff" },
-      { userId, title: "Morning run", points: 10, type: "repeatable" },
+      { userId, title: "Morning workout", points: 10, type: "repeatable" },
       { userId, title: "Read 20 pages", points: 8, type: "repeatable" },
-      { userId, title: "Clear inbox", points: 12, type: "repeatable" },
-      { userId, title: "File taxes", points: 40, type: "oneoff" },
+      { userId, title: "Drink 2L of water", points: 5, type: "repeatable" },
+      { userId, title: "Inbox zero", points: 6, type: "repeatable" },
+      { userId, title: "Ship the side project", points: 40, type: "oneoff" },
+      { userId, title: "File taxes", points: 25, type: "oneoff" },
     ]);
 
     await tx.insert(budgets).values([
@@ -70,7 +71,7 @@ async function main() {
         unit: "$",
         period: "monthly",
         periodLimit: "1000",
-        dailyLimit: "30",
+        dailyLimit: "35",
         rewardPoints: 50,
       },
       {
@@ -78,23 +79,23 @@ async function main() {
         name: "Calories",
         unit: "kcal",
         period: "weekly",
-        periodLimit: "9000",
-        dailyLimit: "1200",
+        periodLimit: "14000",
+        dailyLimit: "2000",
         rewardPoints: 30,
       },
     ]);
 
     await tx.insert(rewards).values([
-      { userId, name: "New ring", cost: 100, emoji: "💍" },
       { userId, name: "Bubble tea", cost: 20, emoji: "🧋" },
       { userId, name: "Movie night", cost: 60, emoji: "🎬" },
-      { userId, name: "New sneakers", cost: 300, emoji: "👟" },
+      { userId, name: "New book", cost: 80, emoji: "📚" },
       { userId, name: "Fancy dinner", cost: 250, emoji: "🍽️" },
-      { userId, name: "Spa day", cost: 400, emoji: "💆" },
+      { userId, name: "New sneakers", cost: 300, emoji: "👟" },
+      { userId, name: "Weekend trip", cost: 500, emoji: "✈️" },
     ]);
   });
 
-  console.log(`Seeded 5 tasks, 2 budgets, 6 rewards for ${email}.`);
+  console.log(`Seeded 6 tasks, 2 budgets, 6 rewards for ${email}.`);
 }
 
 main()
