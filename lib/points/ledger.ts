@@ -1,7 +1,7 @@
 import { desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@/db/client";
-import { type InsertLedgerEntry, ledger, type LedgerEntry } from "@/db/schema";
+import { ledger, type InsertLedgerEntry, type LedgerEntry } from "@/db/schema";
 
 /** A db handle or an open transaction — both can run these queries. */
 type Executor = typeof db | Parameters<Parameters<typeof db.transaction>[0]>[0];

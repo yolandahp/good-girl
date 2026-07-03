@@ -1,7 +1,7 @@
 import { and, desc, eq, gte } from "drizzle-orm";
 
 import { db } from "@/db/client";
-import { type Budget, budgetLogs, budgets } from "@/db/schema";
+import { budgetLogs, budgets, type Budget } from "@/db/schema";
 import { periodBounds, todayUTC } from "@/lib/points/period";
 
 export type BudgetView = Budget & {

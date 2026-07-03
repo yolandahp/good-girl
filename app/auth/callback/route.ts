@@ -13,7 +13,8 @@ export async function GET(request: Request) {
 
   // Only allow relative in-app redirects to avoid an open redirect.
   const nextParam = searchParams.get("next");
-  const next = nextParam && nextParam.startsWith("/") ? nextParam : "/dashboard";
+  const next =
+    nextParam && nextParam.startsWith("/") ? nextParam : "/dashboard";
 
   if (code) {
     const supabase = await createClient();

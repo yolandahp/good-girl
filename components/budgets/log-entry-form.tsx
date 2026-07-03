@@ -30,7 +30,11 @@ export function LogEntryForm({
   }
 
   return (
-    <form ref={formRef} action={onSubmit} className="mt-5 border-t border-line pt-4">
+    <form
+      ref={formRef}
+      action={onSubmit}
+      className="mt-5 border-t border-line pt-4"
+    >
       <div className="flex gap-2">
         <input type="hidden" name="budgetId" value={budgetId} />
         <Input

@@ -31,7 +31,9 @@ export default async function DashboardPage() {
     <div className="mx-auto max-w-2xl space-y-8 px-5 py-8">
       <header className="flex items-baseline justify-between">
         <div>
-          <p className="text-xs uppercase tracking-widest text-muted">{today}</p>
+          <p className="text-xs tracking-widest text-muted uppercase">
+            {today}
+          </p>
           <h1 className="mt-0.5 font-display text-2xl font-bold tracking-tight">
             Overview
           </h1>

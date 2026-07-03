@@ -1,20 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { budgetLogs, budgets } from "@/db/schema";
+import { type ActionState } from "@/lib/action-state";
 import { todayUTC } from "@/lib/points/period";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { createBudgetSchema, logEntrySchema } from "@/lib/validation/budget";
 
-export type ActionState = { error?: string };
-
-export async function createBudget(
-  formData: FormData,
-): Promise<ActionState> {
+export async function createBudget(formData: FormData): Promise<ActionState> {
   const user = await getCurrentUser();
 
   const parsed = createBudgetSchema.safeParse({

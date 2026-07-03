@@ -1,18 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { db } from "@/db/client";
 import { tasks } from "@/db/schema";
+import { type ActionState } from "@/lib/action-state";
 import { appendLedger } from "@/lib/points/ledger";
 import { taskCompletionEntry } from "@/lib/points/task-entry";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { createTaskSchema } from "@/lib/validation/task";
-
-export type CreateTaskState = { error?: string };
 
 /** Reads a task id from form data, or null if it isn't a valid uuid. */
 function taskIdFrom(formData: FormData): string | null {
@@ -20,9 +18,7 @@ function taskIdFrom(formData: FormData): string | null {
   return parsed.success ? parsed.data : null;
 }
 
-export async function createTask(
-  formData: FormData,
-): Promise<CreateTaskState> {
+export async function createTask(formData: FormData): Promise<ActionState> {
   const user = await getCurrentUser();
 
   const parsed = createTaskSchema.safeParse({

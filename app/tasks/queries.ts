@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull } from "drizzle-orm";
 
 import { db } from "@/db/client";
-import { ledger, type Task, tasks } from "@/db/schema";
+import { ledger, tasks, type Task } from "@/db/schema";
 
 export type TaskView = Task & {
   /** True when a one-off task has already been completed (has a ledger row). */

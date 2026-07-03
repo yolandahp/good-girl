@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 
 import { client, db } from "./client";
 import {
-  budgets,
   budgetLogs,
+  budgets,
   budgetSettlements,
   ledger,
   rewards,
@@ -37,7 +37,9 @@ async function main() {
   if (error) throw error;
   const user = data.users.find((u) => u.email === email);
   if (!user) {
-    throw new Error(`No auth user found for ${email}. Sign up first, then seed.`);
+    throw new Error(
+      `No auth user found for ${email}. Sign up first, then seed.`,
+    );
   }
   const userId = user.id;
 

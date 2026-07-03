@@ -15,11 +15,13 @@ export default async function BudgetsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-5 py-8">
-      <h1 className="font-display text-2xl font-bold tracking-tight">Budgets</h1>
+      <h1 className="font-display text-2xl font-bold tracking-tight">
+        Budgets
+      </h1>
 
       <p className="text-sm text-muted">
-        Stay under the period limit to earn points when it closes. The daily line
-        is just a pacing guide — going over it costs nothing.
+        Stay under the period limit to earn points when it closes. The daily
+        line is just a pacing guide — going over it costs nothing.
       </p>
 
       <CreateBudgetForm />

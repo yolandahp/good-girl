@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from "next/server";
-
 import { createServerClient } from "@supabase/ssr";
 
 /** Auth pages a signed-in visitor should be bounced away from. */

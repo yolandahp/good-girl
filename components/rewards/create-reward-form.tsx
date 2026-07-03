@@ -2,13 +2,12 @@
 
 import { useRef, useState, useTransition } from "react";
 
-import { createBudget } from "@/app/budgets/actions";
+import { createReward } from "@/app/rewards/actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 
-export function CreateBudgetForm() {
+export function CreateRewardForm() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
@@ -16,7 +15,7 @@ export function CreateBudgetForm() {
 
   function onSubmit(formData: FormData) {
     startTransition(async () => {
-      const result = await createBudget(formData);
+      const result = await createReward(formData);
       if (result.error) {
         setError(result.error);
         return;
@@ -30,7 +29,7 @@ export function CreateBudgetForm() {
   if (!open) {
     return (
       <Button variant="outline" onClick={() => setOpen(true)}>
-        + New budget
+        + New reward
       </Button>
     );
   }
@@ -40,48 +39,27 @@ export function CreateBudgetForm() {
       <form ref={formRef} action={onSubmit} className="space-y-3">
         <Input
           name="name"
-          placeholder="Budget name (e.g. Spending)"
+          placeholder="Reward name (e.g. Bubble tea)"
           required
           autoFocus
         />
 
         <div className="flex gap-3">
-          <Input name="unit" placeholder="Unit ($, kcal)" className="w-32" />
-          <Select name="period" defaultValue="monthly" className="flex-1">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </Select>
-        </div>
-
-        <div className="flex gap-3">
           <Input
-            name="periodLimit"
+            name="emoji"
+            placeholder="Emoji"
+            className="w-24 text-center"
+            maxLength={8}
+          />
+          <Input
+            name="cost"
             type="number"
             min={1}
-            step="any"
-            placeholder="Period limit"
+            placeholder="Cost in points"
             required
             className="flex-1 font-mono"
           />
-          <Input
-            name="dailyLimit"
-            type="number"
-            min={1}
-            step="any"
-            placeholder="Daily limit (optional)"
-            className="flex-1 font-mono"
-          />
         </div>
-
-        <Input
-          name="rewardPoints"
-          type="number"
-          min={0}
-          placeholder="Reward points on close"
-          required
-          className="font-mono"
-        />
 
         {error ? (
           <p className="text-sm font-medium text-coral">{error}</p>
@@ -89,7 +67,7 @@ export function CreateBudgetForm() {
 
         <div className="flex gap-2">
           <Button type="submit" disabled={pending}>
-            {pending ? "Adding…" : "Add budget"}
+            {pending ? "Adding…" : "Add reward"}
           </Button>
           <Button
             type="button"

@@ -39,7 +39,9 @@ export function TaskList({ tasks }: { tasks: TaskView[] }) {
             onClick={() => setFilter(key)}
             className={cn(
               "focusable rounded-full px-3 py-1 font-medium transition",
-              filter === key ? "bg-ink text-paper" : "text-muted hover:text-ink",
+              filter === key
+                ? "bg-ink text-paper"
+                : "text-muted hover:text-ink",
             )}
           >
             {label}

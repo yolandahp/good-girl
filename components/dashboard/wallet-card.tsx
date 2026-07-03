@@ -5,7 +5,7 @@ export function WalletCard({ stats }: { stats: WalletStats }) {
   return (
     <div className="rounded-2xl bg-ink p-6 text-paper md:p-8">
       <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-widest text-paper/50">
+        <p className="text-xs tracking-widest text-paper/50 uppercase">
           Spendable balance
         </p>
         <span className="font-mono text-xs text-paper/50">PTS</span>
@@ -21,13 +21,13 @@ export function WalletCard({ stats }: { stats: WalletStats }) {
             {stats.earnedThisWeek >= 0 ? "+" : ""}
             {stats.earnedThisWeek}
           </p>
-          <p className="mt-0.5 text-[11px] uppercase tracking-wider text-paper/50">
+          <p className="mt-0.5 text-[11px] tracking-wider text-paper/50 uppercase">
             Earned wk
           </p>
         </div>
         <div className="bg-ink py-3">
           <p className="font-mono text-lg font-bold">{stats.spentThisWeek}</p>
-          <p className="mt-0.5 text-[11px] uppercase tracking-wider text-paper/50">
+          <p className="mt-0.5 text-[11px] tracking-wider text-paper/50 uppercase">
             Spent wk
           </p>
         </div>

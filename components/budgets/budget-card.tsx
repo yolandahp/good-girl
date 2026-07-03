@@ -14,7 +14,8 @@ export function BudgetCard({
   showLog?: boolean;
 }) {
   const periodLimit = Number(budget.periodLimit);
-  const dailyLimit = budget.dailyLimit === null ? null : Number(budget.dailyLimit);
+  const dailyLimit =
+    budget.dailyLimit === null ? null : Number(budget.dailyLimit);
   const over = budget.periodTotal > periodLimit;
   const fmt = (value: number) => formatAmount(budget.unit, value);
 

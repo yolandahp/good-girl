@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-
 import type { User } from "@supabase/supabase-js";
 
 import { createClient } from "./server";

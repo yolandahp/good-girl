@@ -10,7 +10,10 @@ export const createBudgetSchema = z.object({
     .max(1_000_000_000),
   dailyLimit: z.preprocess(
     (v) => (v === "" || v == null ? null : v),
-    z.coerce.number().positive("Daily limit must be greater than 0.").nullable(),
+    z.coerce
+      .number()
+      .positive("Daily limit must be greater than 0.")
+      .nullable(),
   ),
   rewardPoints: z.coerce
     .number()
