@@ -8,16 +8,16 @@ export type DateRange = { start: string; end: string };
 /* Dates are handled as UTC calendar days (`YYYY-MM-DD`). Lexicographic string
  * comparison of that format is also chronological, which the callers rely on. */
 
-function toUTCDate(dateStr: string): Date {
+export function toUTCDate(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d));
 }
 
-function format(date: Date): string {
+export function formatUTC(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-function addDays(date: Date, days: number): Date {
+export function addDays(date: Date, days: number): Date {
   const next = new Date(date);
   next.setUTCDate(next.getUTCDate() + days);
   return next;
@@ -43,7 +43,7 @@ export function periodBounds(dateStr: string, period: Period): DateRange {
     // getUTCDay: 0=Sun..6=Sat. Days since Monday = (dow + 6) % 7.
     const sinceMonday = (date.getUTCDay() + 6) % 7;
     const start = addDays(date, -sinceMonday);
-    return { start: format(start), end: format(addDays(start, 6)) };
+    return { start: formatUTC(start), end: formatUTC(addDays(start, 6)) };
   }
 
   // monthly
@@ -51,7 +51,7 @@ export function periodBounds(dateStr: string, period: Period): DateRange {
   const month = date.getUTCMonth();
   const start = new Date(Date.UTC(year, month, 1));
   const end = new Date(Date.UTC(year, month + 1, 0)); // day 0 = last of month
-  return { start: format(start), end: format(end) };
+  return { start: formatUTC(start), end: formatUTC(end) };
 }
 
 /**

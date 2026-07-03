@@ -15,6 +15,13 @@
       "when": 1783052012324,
       "tag": "0001_row_level_security",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783078802191,
+      "tag": "0002_scheduled_tasks",
+      "breakpoints": true
     }
   ]
 }

@@ -185,6 +185,31 @@ export const rewards = pgTable(
   (t) => [ownerPolicy("rewards_owner", t.userId)],
 );
 
+/**
+ * Planning layer: which tasks the user has placed on which days. Many-to-many
+ * (a task may sit on several days). Purely for the calendar planner — it does
+ * not touch points, completion, or the ledger.
+ */
+export const scheduledTasks = pgTable(
+  "scheduled_tasks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull(),
+    taskId: uuid("task_id")
+      .notNull()
+      .references(() => tasks.id, { onDelete: "cascade" }),
+    scheduledDate: date("scheduled_date").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("scheduled_tasks_user_date_idx").on(t.userId, t.scheduledDate),
+    unique("scheduled_tasks_task_date_unique").on(t.taskId, t.scheduledDate),
+    ownerPolicy("scheduled_tasks_owner", t.userId),
+  ],
+);
+
 /* -------------------------------------------------------------------------- */
 /* Inferred types                                                              */
 /* -------------------------------------------------------------------------- */
@@ -201,3 +226,5 @@ export type Reward = typeof rewards.$inferSelect;
 export type InsertReward = typeof rewards.$inferInsert;
 export type LedgerEntry = typeof ledger.$inferSelect;
 export type InsertLedgerEntry = typeof ledger.$inferInsert;
+export type ScheduledTask = typeof scheduledTasks.$inferSelect;
+export type InsertScheduledTask = typeof scheduledTasks.$inferInsert;

@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "/dashboard", label: "Home" },
   { href: "/tasks", label: "Tasks" },
+  { href: "/plan", label: "Plan" },
   { href: "/budgets", label: "Budgets" },
   { href: "/rewards", label: "Rewards" },
 ];
@@ -80,7 +81,7 @@ export function AppShell({
       </div>
 
       {/* Bottom nav — mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-white md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white md:hidden">
         {NAV.map((item) => (
           <Link
             key={item.href}

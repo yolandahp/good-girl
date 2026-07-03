@@ -1,7 +1,8 @@
 import { type BudgetView } from "@/app/budgets/queries";
 import { BudgetCard } from "@/components/budgets/budget-card";
 
-/** Read-only budget progress for the dashboard (no log input). */
+/** Budget progress for the dashboard, with quick logging (edit lives on the
+ * Budgets page). */
 export function BudgetPace({ budgets }: { budgets: BudgetView[] }) {
   if (budgets.length === 0) return null;
 
@@ -12,7 +13,7 @@ export function BudgetPace({ budgets }: { budgets: BudgetView[] }) {
       </h2>
       <div className="space-y-4">
         {budgets.map((budget) => (
-          <BudgetCard key={budget.id} budget={budget} />
+          <BudgetCard key={budget.id} budget={budget} showLog />
         ))}
       </div>
     </section>

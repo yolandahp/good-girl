@@ -1,5 +1,5 @@
 import { getBudgetsView } from "@/app/budgets/queries";
-import { getActiveTasks } from "@/app/tasks/queries";
+import { getScheduledToday } from "@/app/plan/queries";
 import { AppShell } from "@/components/app-shell";
 import { BudgetPace } from "@/components/dashboard/budget-pace";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   const [stats, tasks, budgets] = await Promise.all([
     getWalletStats(user.id),
-    getActiveTasks(user.id),
+    getScheduledToday(user.id),
     getBudgetsView(user.id),
   ]);
 
