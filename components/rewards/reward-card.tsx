@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
+import { deleteReward } from "@/app/rewards/actions";
 import { type RewardView } from "@/app/rewards/queries";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { cn } from "@/lib/utils";
@@ -17,7 +18,17 @@ export function RewardCard({
   balance: number;
 }) {
   const [editing, setEditing] = useState(false);
+  const [pending, startTransition] = useTransition();
   const redeemed = reward.redeemedAt !== null;
+
+  function handleDelete() {
+    if (!window.confirm(`Remove "${reward.name}" from your rewards?`)) return;
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("rewardId", reward.id);
+      await deleteReward(formData);
+    });
+  }
 
   if (editing) {
     return (
@@ -38,7 +49,17 @@ export function RewardCard({
       <div className="flex items-start justify-between">
         <span className="text-3xl">{reward.emoji ?? "🎁"}</span>
         <div className="flex items-center gap-2">
-          {!redeemed ? (
+          {redeemed ? (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={pending}
+              aria-label="Delete reward"
+              className="focusable text-xs font-medium text-muted hover:text-ink disabled:opacity-50"
+            >
+              Delete
+            </button>
+          ) : (
             <button
               type="button"
               onClick={() => setEditing(true)}
@@ -47,7 +68,7 @@ export function RewardCard({
             >
               Edit
             </button>
-          ) : null}
+          )}
           <span className="font-mono text-sm font-bold">{reward.cost}</span>
         </div>
       </div>
