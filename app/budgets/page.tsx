@@ -21,15 +21,18 @@ export default async function BudgetsPage() {
   return (
     <AppShell balance={balance}>
       <div className="mx-auto max-w-2xl space-y-6 px-5 py-8">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
-          Budgets
-        </h1>
-
-        <p className="text-sm text-muted">
-          Stay under the period limit to earn points when it closes.
-        </p>
-
-        <CreateBudgetForm />
+        <CreateBudgetForm
+          heading={
+            <div>
+              <h1 className="font-display text-2xl font-bold tracking-tight">
+                Budgets
+              </h1>
+              <p className="mt-1 text-sm text-muted">
+                Stay under the period limit to earn points when it closes.
+              </p>
+            </div>
+          }
+        />
 
         {budgets.length === 0 ? (
           <EmptyState

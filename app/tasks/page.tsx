@@ -16,9 +16,13 @@ export default async function TasksPage() {
   return (
     <AppShell balance={balance}>
       <div className="mx-auto max-w-2xl space-y-6 px-5 py-8">
-        <h1 className="font-display text-2xl font-bold tracking-tight">Tasks</h1>
-
-        <CreateTaskForm />
+        <CreateTaskForm
+          heading={
+            <h1 className="font-display text-2xl font-bold tracking-tight">
+              Tasks
+            </h1>
+          }
+        />
 
         <TaskList tasks={tasks} />
       </div>

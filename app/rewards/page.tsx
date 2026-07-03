@@ -13,16 +13,19 @@ export default async function RewardsPage() {
   return (
     <AppShell balance={balance}>
       <div className="mx-auto max-w-2xl space-y-6 px-5 py-8">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
-          Rewards
-        </h1>
-
-        <p className="text-sm text-muted">
-          <span className="font-mono font-bold text-ink">{balance}</span> points
-          available to spend.
-        </p>
-
-        <CreateRewardForm />
+        <CreateRewardForm
+          heading={
+            <div>
+              <h1 className="font-display text-2xl font-bold tracking-tight">
+                Rewards
+              </h1>
+              <p className="mt-1 text-sm text-muted">
+                <span className="font-mono font-bold text-ink">{balance}</span>{" "}
+                points available to spend.
+              </p>
+            </div>
+          }
+        />
 
         {rewards.length === 0 ? (
           <EmptyState

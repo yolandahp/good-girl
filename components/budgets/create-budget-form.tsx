@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { type ReactNode, useRef, useState, useTransition } from "react";
 
 import { createBudget } from "@/app/budgets/actions";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
-export function CreateBudgetForm() {
+export function CreateBudgetForm({ heading }: { heading: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
@@ -27,17 +27,25 @@ export function CreateBudgetForm() {
     });
   }
 
-  if (!open) {
-    return (
-      <Button variant="outline" onClick={() => setOpen(true)}>
-        + New budget
-      </Button>
-    );
-  }
-
   return (
-    <Card>
-      <form ref={formRef} action={onSubmit} className="space-y-3">
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-4">
+        {heading}
+        <Button
+          variant="outline"
+          onClick={() => {
+            setError(undefined);
+            setOpen((o) => !o);
+          }}
+          className="shrink-0"
+        >
+          + New budget
+        </Button>
+      </div>
+
+      {open ? (
+        <Card>
+          <form ref={formRef} action={onSubmit} className="space-y-3">
         <Input
           name="name"
           placeholder="Budget name (e.g. Spending)"
@@ -106,8 +114,10 @@ export function CreateBudgetForm() {
           >
             Cancel
           </Button>
-        </div>
-      </form>
-    </Card>
+          </div>
+        </form>
+        </Card>
+      ) : null}
+    </div>
   );
 }
