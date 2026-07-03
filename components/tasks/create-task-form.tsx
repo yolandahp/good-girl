@@ -49,7 +49,12 @@ export function CreateTaskForm() {
             required
             className="w-28 font-mono"
           />
-          <Select name="type" defaultValue="repeatable" className="flex-1">
+          <Select
+            name="type"
+            defaultValue="repeatable"
+            aria-label="Task type"
+            className="flex-1"
+          >
             <option value="repeatable">Repeatable</option>
             <option value="oneoff">One-off</option>
           </Select>

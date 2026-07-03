@@ -37,22 +37,26 @@ export async function createTask(formData: FormData): Promise<ActionState> {
   return {};
 }
 
-export async function completeTask(formData: FormData) {
+export async function completeTask(
+  formData: FormData,
+): Promise<{ awarded: boolean }> {
   const user = await getCurrentUser();
   const taskId = taskIdFrom(formData);
-  if (!taskId) return;
+  if (!taskId) return { awarded: false };
 
   const [task] = await db
     .select()
     .from(tasks)
     .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)));
 
-  if (!task || task.status !== "active") return;
+  if (!task || task.status !== "active") return { awarded: false };
 
-  await appendLedger(db, taskCompletionEntry(task));
+  // `null` when the one-off was already awarded (unique constraint no-op).
+  const entry = await appendLedger(db, taskCompletionEntry(task));
 
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
+  return { awarded: entry !== null };
 }
 
 export async function archiveTask(formData: FormData) {

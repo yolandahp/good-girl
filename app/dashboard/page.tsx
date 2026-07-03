@@ -1,6 +1,6 @@
 import { getBudgetsView } from "@/app/budgets/queries";
 import { getActiveTasks } from "@/app/tasks/queries";
-import { SignOutButton } from "@/components/auth/sign-out-button";
+import { AppShell } from "@/components/app-shell";
 import { BudgetPace } from "@/components/dashboard/budget-pace";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
 import { WalletCard } from "@/components/dashboard/wallet-card";
@@ -28,24 +28,21 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-5 py-8">
-      <header className="flex items-baseline justify-between">
-        <div>
-          <p className="text-xs tracking-widest text-muted uppercase">
-            {today}
-          </p>
+    <AppShell balance={stats.balance}>
+      <div className="mx-auto max-w-2xl space-y-8 px-5 py-8">
+        <header>
+          <p className="text-xs uppercase tracking-widest text-muted">{today}</p>
           <h1 className="mt-0.5 font-display text-2xl font-bold tracking-tight">
             Overview
           </h1>
-        </div>
-        <SignOutButton />
-      </header>
+        </header>
 
-      <WalletCard stats={stats} />
+        <WalletCard stats={stats} />
 
-      <TodayTasks tasks={tasks} />
+        <TodayTasks tasks={tasks} />
 
-      <BudgetPace budgets={budgets} />
-    </div>
+        <BudgetPace budgets={budgets} />
+      </div>
+    </AppShell>
   );
 }

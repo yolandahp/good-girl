@@ -5,6 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import { logEntry } from "@/app/budgets/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 
 export function LogEntryForm({
   budgetId,
@@ -15,9 +16,11 @@ export function LogEntryForm({
 }) {
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
+  const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
   function onSubmit(formData: FormData) {
+    const amount = String(formData.get("amount") ?? "");
     startTransition(async () => {
       const result = await logEntry(formData);
       if (result.error) {
@@ -26,6 +29,7 @@ export function LogEntryForm({
       }
       setError(undefined);
       formRef.current?.reset();
+      toast(`Logged ${amount} · ${label}`);
     });
   }
 

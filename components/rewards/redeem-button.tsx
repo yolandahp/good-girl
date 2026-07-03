@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 
 import { redeemReward } from "@/app/rewards/actions";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 export function RedeemButton({
   rewardId,
@@ -16,6 +17,7 @@ export function RedeemButton({
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
+  const { toast } = useToast();
 
   function handleClick() {
     if (!window.confirm(`Redeem "${name}" for ${cost} points?`)) return;
@@ -24,6 +26,7 @@ export function RedeemButton({
       formData.set("rewardId", rewardId);
       const result = await redeemReward(formData);
       setError(result.error);
+      if (!result.error) toast(`−${cost} · ${name}`);
     });
   }
 

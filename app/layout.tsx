@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Space_Mono } from "next/font/google";
 
+import { ToastProvider } from "@/components/ui/toast";
+
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -37,7 +39,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper font-body text-ink">
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

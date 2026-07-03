@@ -47,7 +47,12 @@ export function CreateBudgetForm() {
 
         <div className="flex gap-3">
           <Input name="unit" placeholder="Unit ($, kcal)" className="w-32" />
-          <Select name="period" defaultValue="monthly" className="flex-1">
+          <Select
+            name="period"
+            defaultValue="monthly"
+            aria-label="Budget period"
+            className="flex-1"
+          >
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>

@@ -19,6 +19,8 @@ export function TaskRow({ task }: { task: TaskView }) {
     >
       <CompleteTaskButton
         taskId={task.id}
+        points={task.points}
+        title={task.title}
         done={task.done}
         disabled={lockCompleted}
       />
