@@ -10,7 +10,15 @@ import { cn } from "@/lib/utils";
 import { CompleteTaskButton } from "./complete-task-button";
 import { EditTaskForm } from "./edit-task-form";
 
-export function TaskRow({ task }: { task: TaskView }) {
+export function TaskRow({
+  task,
+  completing = false,
+  onCompleted,
+}: {
+  task: TaskView;
+  completing?: boolean;
+  onCompleted?: () => void;
+}) {
   const [editing, setEditing] = useState(false);
   const lockCompleted = task.done && task.type === "oneoff";
 
@@ -23,14 +31,16 @@ export function TaskRow({ task }: { task: TaskView }) {
       className={cn(
         "group flex items-center gap-3 px-4 py-3.5",
         task.done && "opacity-45",
+        completing && "completing",
       )}
     >
       <CompleteTaskButton
         taskId={task.id}
         points={task.points}
         title={task.title}
-        done={task.done}
-        disabled={lockCompleted}
+        checked={task.done || completing}
+        disabled={lockCompleted || completing}
+        onCompleted={onCompleted}
       />
 
       <div className="min-w-0 flex-1">
@@ -38,6 +48,7 @@ export function TaskRow({ task }: { task: TaskView }) {
           className={cn(
             "truncate font-display text-[15px] font-semibold",
             task.done && "line-through",
+            completing && "strike",
           )}
         >
           {task.title}

@@ -34,8 +34,13 @@ export async function getActiveTasks(userId: string): Promise<TaskView[]> {
 
   const completedOneOff = new Set(completed.map((r) => r.refId));
 
-  return rows.map((task) => ({
-    ...task,
-    done: task.type === "oneoff" && completedOneOff.has(task.id),
-  }));
+  return (
+    rows
+      .map((task) => ({
+        ...task,
+        done: task.type === "oneoff" && completedOneOff.has(task.id),
+      }))
+      // A completed one-off has served its purpose — drop it from the active list.
+      .filter((task) => !task.done)
+  );
 }

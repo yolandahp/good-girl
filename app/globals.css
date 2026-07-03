@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  /* Blush Rose palette */
-  --color-paper: #fbf5f2; /* warm blush white */
-  --color-ink: #2e2228; /* deep plum charcoal */
-  --color-coral: #d65d8a; /* raspberry rose accent */
-  --color-line: #efe2dd; /* hairline borders */
-  --color-muted: #9e8a90; /* secondary text */
+  /* Neutral palette with a pink accent */
+  --color-paper: #f8f7f5; /* soft neutral off-white */
+  --color-ink: #262322; /* neutral warm charcoal */
+  --color-coral: #d65d8a; /* raspberry rose accent (kept) */
+  --color-line: #e8e6e2; /* neutral hairline borders */
+  --color-muted: #8c8985; /* neutral secondary text */
 
   /* Fonts (wired via next/font in layout.tsx) */
   --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
@@ -34,8 +34,44 @@ body {
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Strikethrough sweep across a title as it's completed */
+.strike {
+  position: relative;
+}
+.strike::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 55%;
+  height: 1.5px;
+  width: 0;
+  background: var(--color-muted);
+  opacity: 0.7;
+  animation: strike-sweep 0.4s ease forwards;
+}
+@keyframes strike-sweep {
+  to {
+    width: 100%;
+  }
+}
+
+/* Row fades and lifts away after the strike, before it re-sorts to the bottom */
+.completing {
+  animation: complete-out 0.35s ease 0.35s forwards;
+}
+@keyframes complete-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .prog {
     transition: none;
+  }
+  .strike::after,
+  .completing {
+    animation: none;
   }
 }

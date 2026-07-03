@@ -6,7 +6,7 @@ import { type TaskView } from "@/app/tasks/queries";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 
-import { TaskRow } from "./task-row";
+import { TaskListView } from "./task-list-view";
 
 const FILTERS = [
   ["all", "All"],
@@ -39,9 +39,7 @@ export function TaskList({ tasks }: { tasks: TaskView[] }) {
             onClick={() => setFilter(key)}
             className={cn(
               "focusable rounded-full px-3 py-1 font-medium transition",
-              filter === key
-                ? "bg-ink text-paper"
-                : "text-muted hover:text-ink",
+              filter === key ? "bg-ink text-paper" : "text-muted hover:text-ink",
             )}
           >
             {label}
@@ -54,11 +52,7 @@ export function TaskList({ tasks }: { tasks: TaskView[] }) {
           No {filter} tasks.
         </p>
       ) : (
-        <div className="divide-y divide-line rounded-2xl border border-line bg-white">
-          {shown.map((task) => (
-            <TaskRow key={task.id} task={task} />
-          ))}
-        </div>
+        <TaskListView tasks={shown} />
       )}
     </div>
   );

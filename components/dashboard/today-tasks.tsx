@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { type TaskView } from "@/app/tasks/queries";
-import { TaskRow } from "@/components/tasks/task-row";
+import { TaskListView } from "@/components/tasks/task-list-view";
 import { EmptyState } from "@/components/ui/empty-state";
 
 /** Tasks scheduled for today (from the planner), with a done/total count. */
@@ -33,11 +33,7 @@ export function TodayTasks({ tasks }: { tasks: TaskView[] }) {
           }
         />
       ) : (
-        <div className="divide-y divide-line rounded-2xl border border-line bg-white">
-          {top.map((task) => (
-            <TaskRow key={task.id} task={task} />
-          ))}
-        </div>
+        <TaskListView tasks={top} />
       )}
     </section>
   );

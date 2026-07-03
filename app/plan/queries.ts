@@ -110,8 +110,10 @@ export async function getScheduledToday(userId: string): Promise<TaskView[]> {
 
   const doneOneOff = new Set(completed.map((r) => r.refId));
 
-  return rows.map((task) => ({
-    ...task,
-    done: task.type === "oneoff" && doneOneOff.has(task.id),
-  }));
+  return rows
+    .map((task) => ({
+      ...task,
+      done: task.type === "oneoff" && doneOneOff.has(task.id),
+    }))
+    .filter((task) => !task.done);
 }

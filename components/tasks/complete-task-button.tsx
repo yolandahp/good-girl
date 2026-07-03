@@ -10,14 +10,16 @@ export function CompleteTaskButton({
   taskId,
   points,
   title,
-  done,
+  checked,
   disabled,
+  onCompleted,
 }: {
   taskId: string;
   points: number;
   title: string;
-  done: boolean;
+  checked: boolean;
   disabled: boolean;
+  onCompleted?: () => void;
 }) {
   // `pending` disables the button while the action runs, which debounces
   // rapid double-taps on repeatable tasks.
@@ -30,7 +32,9 @@ export function CompleteTaskButton({
       const formData = new FormData();
       formData.set("taskId", taskId);
       const { awarded } = await completeTask(formData);
-      if (awarded) toast(`+${points} · ${title}`);
+      if (!awarded) return;
+      toast(`+${points} · ${title}`);
+      onCompleted?.();
     });
   }
 
@@ -42,11 +46,13 @@ export function CompleteTaskButton({
       aria-label={`Complete ${title}`}
       className={cn(
         "focusable grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition",
-        done ? "border-coral bg-coral text-white" : "border-line hover:border-ink",
-        pending && "opacity-50",
+        checked
+          ? "border-coral bg-coral text-white"
+          : "border-line hover:border-ink",
+        pending && !checked && "opacity-50",
       )}
     >
-      {done ? <span className="text-[11px]">✓</span> : null}
+      {checked ? <span className="text-[11px]">✓</span> : null}
     </button>
   );
 }
