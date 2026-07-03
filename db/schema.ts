@@ -199,6 +199,8 @@ export const scheduledTasks = pgTable(
       .notNull()
       .references(() => tasks.id, { onDelete: "cascade" }),
     scheduledDate: date("scheduled_date").notNull(),
+    /** Set when the task is completed on this scheduled day (done for the day). */
+    completedAt: timestamp("completed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

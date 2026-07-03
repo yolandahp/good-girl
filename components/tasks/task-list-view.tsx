@@ -9,13 +9,21 @@ import { TaskRow } from "./task-row";
 /**
  * Renders task rows with client-managed order and a completion animation.
  * Completing a task plays a strikethrough + fade, then:
- *  - repeatable → re-sorts to the bottom (it recurs),
- *  - one-off → is removed (it's done for good).
+ *  - one-off → removed (done for good),
+ *  - repeatable → re-sorts to the bottom (it recurs), unless `clearOnComplete`
+ *    is set (e.g. today's list, where completing means done for today) in which
+ *    case it's removed too.
  * Completing tasks are kept visible through the animation even after the
  * server has already dropped them. Order is session-local, reconciled from
  * props on every render.
  */
-export function TaskListView({ tasks }: { tasks: TaskView[] }) {
+export function TaskListView({
+  tasks,
+  clearOnComplete = false,
+}: {
+  tasks: TaskView[];
+  clearOnComplete?: boolean;
+}) {
   // Canonical order of task ids; only changes on an explicit re-sort/removal.
   const [orderIds, setOrderIds] = useState<string[]>(() =>
     tasks.map((t) => t.id),
@@ -42,8 +50,10 @@ export function TaskListView({ tasks }: { tasks: TaskView[] }) {
     setTimeout(() => {
       setOrderIds((prev) => {
         const base = prev.filter((id) => id !== task.id);
-        // Repeatable tasks recur, so they move to the bottom; one-offs are gone.
-        return task.type === "repeatable" ? [...base, task.id] : base;
+        // Repeatable tasks recur → move to the bottom; but when clearing (today's
+        // list) or for one-offs, drop them entirely.
+        const keep = task.type === "repeatable" && !clearOnComplete;
+        return keep ? [...base, task.id] : base;
       });
       setCompleting((prev) => {
         const next = new Map(prev);

@@ -33,7 +33,7 @@ export function TodayTasks({ tasks }: { tasks: TaskView[] }) {
           }
         />
       ) : (
-        <TaskListView tasks={top} />
+        <TaskListView tasks={top} clearOnComplete />
       )}
     </section>
   );

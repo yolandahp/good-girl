@@ -1,14 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/db/client";
-import { tasks } from "@/db/schema";
+import { scheduledTasks, tasks } from "@/db/schema";
 import { type ActionState } from "@/lib/action-state";
 import { uuidField } from "@/lib/form";
 import { appendLedger } from "@/lib/points/ledger";
 import { taskCompletionEntry } from "@/lib/points/task-entry";
+import { todayUTC } from "@/lib/points/period";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { createTaskSchema } from "@/lib/validation/task";
 
@@ -72,8 +73,22 @@ export async function completeTask(
   // `null` when the one-off was already awarded (unique constraint no-op).
   const entry = await appendLedger(db, taskCompletionEntry(task));
 
+  // Mark today's planned instance done so it stays off today's list.
+  await db
+    .update(scheduledTasks)
+    .set({ completedAt: new Date() })
+    .where(
+      and(
+        eq(scheduledTasks.taskId, task.id),
+        eq(scheduledTasks.userId, user.id),
+        eq(scheduledTasks.scheduledDate, todayUTC()),
+        isNull(scheduledTasks.completedAt),
+      ),
+    );
+
   revalidatePath("/tasks");
   revalidatePath("/dashboard");
+  revalidatePath("/plan");
   return { awarded: entry !== null };
 }
 

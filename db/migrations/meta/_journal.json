@@ -22,6 +22,13 @@
       "when": 1783078802191,
       "tag": "0002_scheduled_tasks",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783095003142,
+      "tag": "0003_scheduled_completed_at",
+      "breakpoints": true
     }
   ]
 }
