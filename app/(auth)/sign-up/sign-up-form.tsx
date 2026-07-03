@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import { signUp, type SignUpState } from "./actions";
 
 const initialState: SignUpState = {};
@@ -24,13 +27,12 @@ export function SignUpForm() {
           <label htmlFor="email" className="text-sm font-medium">
             Email
           </label>
-          <input
+          <Input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            className="focusable w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ink"
           />
         </div>
 
@@ -38,14 +40,13 @@ export function SignUpForm() {
           <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <input
+          <Input
             id="password"
             name="password"
             type="password"
             autoComplete="new-password"
             required
             minLength={6}
-            className="focusable w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ink"
           />
         </div>
 
@@ -56,13 +57,9 @@ export function SignUpForm() {
           <p className="text-sm font-medium text-ink">{state.message}</p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="focusable w-full rounded-lg bg-ink py-2.5 text-sm font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Creating account…" : "Sign up"}
-        </button>
+        </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted">

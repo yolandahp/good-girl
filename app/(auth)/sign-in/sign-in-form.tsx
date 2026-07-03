@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
-import { signIn, type SignInState } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import { signIn } from "./actions";
 
 export function SignInForm({ initialError }: { initialError?: string }) {
   const [state, formAction, pending] = useActionState(signIn, {
@@ -22,13 +25,12 @@ export function SignInForm({ initialError }: { initialError?: string }) {
           <label htmlFor="email" className="text-sm font-medium">
             Email
           </label>
-          <input
+          <Input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            className="focusable w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ink"
           />
         </div>
 
@@ -36,13 +38,12 @@ export function SignInForm({ initialError }: { initialError?: string }) {
           <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <input
+          <Input
             id="password"
             name="password"
             type="password"
             autoComplete="current-password"
             required
-            className="focusable w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ink"
           />
         </div>
 
@@ -50,13 +51,9 @@ export function SignInForm({ initialError }: { initialError?: string }) {
           <p className="text-sm font-medium text-coral">{state.error}</p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="focusable w-full rounded-lg bg-ink py-2.5 text-sm font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Signing in…" : "Sign in"}
-        </button>
+        </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted">
