@@ -5,7 +5,9 @@ export default defineConfig({
   out: "./db/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Migrations run over the session-mode pooler (DIRECT_URL), which supports
+    // the full session features drizzle-kit needs. Falls back to DATABASE_URL.
+    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL!,
   },
   verbose: true,
   strict: true,
