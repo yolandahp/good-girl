@@ -16,7 +16,7 @@ export default async function DashboardPage() {
   // wallet below reflects them.
   await settleClosedPeriods(user.id);
 
-  const [stats, tasks, budgets] = await Promise.all([
+  const [stats, todaySchedule, budgets] = await Promise.all([
     getWalletStats(user.id),
     getScheduledToday(user.id),
     getBudgetsView(user.id),
@@ -41,7 +41,11 @@ export default async function DashboardPage() {
 
         <WalletCard stats={stats} />
 
-        <TodayTasks tasks={tasks} />
+        <TodayTasks
+          tasks={todaySchedule.tasks}
+          done={todaySchedule.done}
+          total={todaySchedule.total}
+        />
 
         <BudgetPace budgets={budgets} />
       </div>

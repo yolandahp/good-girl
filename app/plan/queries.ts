@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, gte, isNull, lte } from "drizzle-orm";
+import { and, eq, getTableColumns, gte, lte } from "drizzle-orm";
 
 import { type TaskView } from "@/app/tasks/queries";
 import { db } from "@/db/client";
@@ -67,16 +67,29 @@ export async function getMonthSchedule(
   return byDate;
 }
 
+export type TodaySchedule = {
+  /** Still-to-do tasks scheduled for today (completed ones drop off the list). */
+  tasks: TaskView[];
+  /** Total tasks scheduled for today. */
+  total: number;
+  /** How many of today's scheduled tasks are already done. */
+  done: number;
+};
+
 /**
- * Active tasks scheduled for today, as `TaskView`s (with `done`), for the
- * dashboard's "today's tasks" section. At most one row per task (a task can't
- * be scheduled on the same day twice).
+ * Today's scheduled tasks for the dashboard: the to-do list plus a done/total
+ * count. A task can't be scheduled on the same day twice.
  */
-export async function getScheduledToday(userId: string): Promise<TaskView[]> {
+export async function getScheduledToday(
+  userId: string,
+): Promise<TodaySchedule> {
   const todayStr = today();
 
   const rows = await db
-    .select(getTableColumns(tasks))
+    .select({
+      ...getTableColumns(tasks),
+      completedAt: scheduledTasks.completedAt,
+    })
     .from(tasks)
     .innerJoin(
       scheduledTasks,
@@ -84,11 +97,14 @@ export async function getScheduledToday(userId: string): Promise<TaskView[]> {
         eq(scheduledTasks.taskId, tasks.id),
         eq(scheduledTasks.userId, userId),
         eq(scheduledTasks.scheduledDate, todayStr),
-        // Not yet completed for today — completing marks this row done.
-        isNull(scheduledTasks.completedAt),
       ),
     )
     .where(and(eq(tasks.userId, userId), eq(tasks.status, "active")));
 
-  return rows.map((task) => ({ ...task, done: false }));
+  const done = rows.filter((r) => r.completedAt !== null).length;
+  const pending = rows
+    .filter((r) => r.completedAt === null)
+    .map((r) => ({ ...r, done: false })) as TaskView[];
+
+  return { tasks: pending, total: rows.length, done };
 }
