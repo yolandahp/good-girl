@@ -1,7 +1,5 @@
 # Be the Good Girl
 
-> All the good girls go to heaven.
-
 A personal habit-and-reward tracker: turn daily tasks and habits into points, and
 points into real-life rewards. Complete tasks, stay under spending/calorie
 budgets, plan your days on a calendar, and redeem what you've earned.
