@@ -26,8 +26,7 @@ export default async function BudgetsPage() {
         </h1>
 
         <p className="text-sm text-muted">
-          Stay under the period limit to earn points when it closes. The daily
-          line is just a pacing guide — going over it costs nothing.
+          Stay under the period limit to earn points when it closes.
         </p>
 
         <CreateBudgetForm />

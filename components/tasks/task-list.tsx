@@ -65,7 +65,10 @@ export function TaskList({ tasks }: { tasks: TaskView[] }) {
         </p>
       ) : (
         <>
-          <TaskListView key={`${filter}-${currentPage}`} tasks={pageTasks} />
+          {/* Reserve room for a full page so the pager doesn't jump on short pages. */}
+          <div className="min-h-[33rem]">
+            <TaskListView key={`${filter}-${currentPage}`} tasks={pageTasks} />
+          </div>
 
           {totalPages > 1 ? (
             <div className="flex justify-center gap-1">
