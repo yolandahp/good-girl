@@ -29,7 +29,7 @@ export function TaskRow({
   return (
     <div
       className={cn(
-        "group flex items-center gap-3 px-4 py-3.5",
+        "group flex h-[4.5rem] items-center gap-3 px-4",
         task.done && "opacity-45",
         completing && "completing",
       )}

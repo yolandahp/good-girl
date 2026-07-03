@@ -65,8 +65,8 @@ export function TaskList({ tasks }: { tasks: TaskView[] }) {
         </p>
       ) : (
         <>
-          {/* Reserve room for a full page so the pager doesn't jump on short pages. */}
-          <div className="min-h-[33rem]">
+          {/* Reserve ~8.5 rows (row = 4.5rem) so the pager stays put across pages. */}
+          <div className={cn(totalPages > 1 && "min-h-[38.25rem]")}>
             <TaskListView key={`${filter}-${currentPage}`} tasks={pageTasks} />
           </div>
 
