@@ -2,7 +2,7 @@ import { and, desc, eq, gte, lte } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { budgetLogs, budgets, type Budget } from "@/db/schema";
-import { periodBounds, todayUTC } from "@/lib/points/period";
+import { periodBounds, todayUTC, toUTCDate } from "@/lib/points/period";
 
 export type BudgetLogEntry = { id: string; logDate: string; amount: number };
 
@@ -13,9 +13,20 @@ export type BudgetView = Budget & {
   periodTotal: number;
   /** Sum of logs made today. */
   todayTotal: number;
+  /** Which day of the period today is (1-based). */
+  dayOfPeriod: number;
+  /** Total number of days in the period (1 daily, 7 weekly, 28–31 monthly). */
+  periodDays: number;
   /** Individual logs in the current period, most recent first. */
   entries: BudgetLogEntry[];
 };
+
+const DAY_MS = 86_400_000;
+
+/** Whole days between two `YYYY-MM-DD` dates (b - a). */
+function daysBetween(a: string, b: string): number {
+  return Math.round((toUTCDate(b).getTime() - toUTCDate(a).getTime()) / DAY_MS);
+}
 
 /**
  * Budgets for a user with their current-period totals and individual entries,
@@ -67,6 +78,8 @@ export async function getBudgetsView(userId: string): Promise<BudgetView[]> {
         periodEnd: end,
         periodTotal,
         todayTotal,
+        dayOfPeriod: daysBetween(start, today) + 1,
+        periodDays: daysBetween(start, end) + 1,
         entries,
       };
     }),

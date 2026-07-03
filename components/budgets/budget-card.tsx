@@ -68,7 +68,12 @@ export function BudgetCard({
       <div className="space-y-4">
         <div>
           <div className="mb-1.5 flex justify-between font-mono text-xs">
-            <span className="text-muted">period</span>
+            <span className="text-muted">
+              period
+              {budget.periodDays > 1
+                ? ` · day ${budget.dayOfPeriod}/${budget.periodDays}`
+                : null}
+            </span>
             <span>
               {fmt(budget.periodTotal)} / {fmt(periodLimit)}
             </span>

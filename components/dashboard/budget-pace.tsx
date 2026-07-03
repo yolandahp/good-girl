@@ -9,7 +9,7 @@ export function BudgetPace({ budgets }: { budgets: BudgetView[] }) {
   return (
     <section>
       <h2 className="mb-3 font-display font-semibold tracking-tight">
-        Budget pace
+        Staying on track
       </h2>
       <div className="space-y-4">
         {budgets.map((budget) => (

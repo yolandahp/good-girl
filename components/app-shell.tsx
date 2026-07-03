@@ -33,8 +33,8 @@ export function AppShell({
 
   return (
     <div className="md:flex md:min-h-screen">
-      {/* Sidebar — desktop */}
-      <aside className="hidden md:flex md:w-64 md:shrink-0 md:flex-col md:border-r md:border-line md:px-6 md:py-8">
+      {/* Sidebar — desktop (sticks while the main content scrolls) */}
+      <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-64 md:shrink-0 md:flex-col md:self-start md:overflow-y-auto md:border-r md:border-line md:px-6 md:py-8">
         <span className="mb-10 font-display text-lg font-bold tracking-tight">
           Be the Good Girl
         </span>
