@@ -2,13 +2,13 @@
 
 import { useRef, useState, useTransition } from "react";
 
-import { createTask } from "@/app/tasks/actions";
+import { createBudget } from "@/app/budgets/actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
-export function CreateTaskForm() {
+export function CreateBudgetForm() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
@@ -16,7 +16,7 @@ export function CreateTaskForm() {
 
   function onSubmit(formData: FormData) {
     startTransition(async () => {
-      const result = await createTask(formData);
+      const result = await createBudget(formData);
       if (result.error) {
         setError(result.error);
         return;
@@ -30,7 +30,7 @@ export function CreateTaskForm() {
   if (!open) {
     return (
       <Button variant="outline" onClick={() => setOpen(true)}>
-        + New task
+        + New budget
       </Button>
     );
   }
@@ -38,22 +38,45 @@ export function CreateTaskForm() {
   return (
     <Card>
       <form ref={formRef} action={onSubmit} className="space-y-3">
-        <Input name="title" placeholder="Task title" required autoFocus />
+        <Input name="name" placeholder="Budget name (e.g. Spending)" required autoFocus />
+
+        <div className="flex gap-3">
+          <Input name="unit" placeholder="Unit ($, kcal)" className="w-32" />
+          <Select name="period" defaultValue="monthly" className="flex-1">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </Select>
+        </div>
 
         <div className="flex gap-3">
           <Input
-            name="points"
+            name="periodLimit"
             type="number"
             min={1}
-            placeholder="Points"
+            step="any"
+            placeholder="Period limit"
             required
-            className="w-28 font-mono"
+            className="flex-1 font-mono"
           />
-          <Select name="type" defaultValue="repeatable" className="flex-1">
-            <option value="repeatable">Repeatable</option>
-            <option value="oneoff">One-off</option>
-          </Select>
+          <Input
+            name="dailyLimit"
+            type="number"
+            min={1}
+            step="any"
+            placeholder="Daily limit (optional)"
+            className="flex-1 font-mono"
+          />
         </div>
+
+        <Input
+          name="rewardPoints"
+          type="number"
+          min={0}
+          placeholder="Reward points on close"
+          required
+          className="font-mono"
+        />
 
         {error ? (
           <p className="text-sm font-medium text-coral">{error}</p>
@@ -61,7 +84,7 @@ export function CreateTaskForm() {
 
         <div className="flex gap-2">
           <Button type="submit" disabled={pending}>
-            {pending ? "Adding…" : "Add task"}
+            {pending ? "Adding…" : "Add budget"}
           </Button>
           <Button
             type="button"

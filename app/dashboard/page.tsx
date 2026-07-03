@@ -1,15 +1,24 @@
+import { getBudgetsView } from "@/app/budgets/queries";
 import { getActiveTasks } from "@/app/tasks/queries";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { BudgetPace } from "@/components/dashboard/budget-pace";
 import { TodayTasks } from "@/components/dashboard/today-tasks";
 import { WalletCard } from "@/components/dashboard/wallet-card";
 import { getWalletStats } from "@/lib/points/ledger";
+import { settleClosedPeriods } from "@/lib/points/settlement";
 import { getCurrentUser } from "@/lib/supabase/auth";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
-  const [stats, tasks] = await Promise.all([
+
+  // Lazy on-read: pay out any periods that closed since the last visit, so the
+  // wallet below reflects them.
+  await settleClosedPeriods(user.id);
+
+  const [stats, tasks, budgets] = await Promise.all([
     getWalletStats(user.id),
     getActiveTasks(user.id),
+    getBudgetsView(user.id),
   ]);
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -33,6 +42,8 @@ export default async function DashboardPage() {
       <WalletCard stats={stats} />
 
       <TodayTasks tasks={tasks} />
+
+      <BudgetPace budgets={budgets} />
     </div>
   );
 }
