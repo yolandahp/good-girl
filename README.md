@@ -4,6 +4,9 @@ A personal habit-and-reward tracker: turn daily tasks and habits into points, an
 points into real-life rewards. Complete tasks, stay under spending/calorie
 budgets, plan your days on a calendar, and redeem what you've earned.
 
+https://bethegoodgirl.vercel.app/
+<img width="1710" height="987" alt="Screenshot 2026-07-04 at 2 22 41 PM" src="https://github.com/user-attachments/assets/9d057a5a-20a6-4ef3-9676-4c24bdb2f4b7" />
+
 ## Stack
 
 Next.js 16 · React 19 · TypeScript · Tailwind v4 · Supabase Auth ·
