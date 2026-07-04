@@ -8,8 +8,16 @@ import {
   budgetSettlements,
   ledger,
   rewards,
+  scheduledTasks,
   tasks,
 } from "./schema";
+
+// Today in the app timezone (mirrors lib/points/period without the @/ alias,
+// which this tsx-run script can't resolve).
+const APP_TIMEZONE = process.env.APP_TIMEZONE ?? "Asia/Singapore";
+const todayStr = new Intl.DateTimeFormat("en-CA", {
+  timeZone: APP_TIMEZONE,
+}).format(new Date());
 
 /**
  * Seeds sample tasks, budgets, and rewards for local development.
@@ -55,14 +63,26 @@ async function main() {
     await tx.delete(tasks).where(eq(tasks.userId, userId));
     await tx.delete(rewards).where(eq(rewards.userId, userId));
 
-    await tx.insert(tasks).values([
-      { userId, title: "Morning workout", points: 10, type: "repeatable" },
-      { userId, title: "Read 20 pages", points: 8, type: "repeatable" },
-      { userId, title: "Drink 2L of water", points: 5, type: "repeatable" },
-      { userId, title: "Inbox zero", points: 6, type: "repeatable" },
-      { userId, title: "Ship the side project", points: 40, type: "oneoff" },
-      { userId, title: "File taxes", points: 25, type: "oneoff" },
-    ]);
+    const inserted = await tx
+      .insert(tasks)
+      .values([
+        { userId, title: "Morning workout", points: 10, type: "repeatable" },
+        { userId, title: "Read 20 pages", points: 8, type: "repeatable" },
+        { userId, title: "Drink 2L of water", points: 5, type: "repeatable" },
+        { userId, title: "Inbox zero", points: 6, type: "repeatable" },
+        { userId, title: "Ship the side project", points: 40, type: "oneoff" },
+        { userId, title: "File taxes", points: 25, type: "oneoff" },
+      ])
+      .returning({ id: tasks.id });
+
+    // Put the first few tasks on today's plan so the dashboard has content.
+    await tx.insert(scheduledTasks).values(
+      inserted.slice(0, 4).map((t) => ({
+        userId,
+        taskId: t.id,
+        scheduledDate: todayStr,
+      })),
+    );
 
     await tx.insert(budgets).values([
       {
@@ -95,7 +115,9 @@ async function main() {
     ]);
   });
 
-  console.log(`Seeded 6 tasks, 2 budgets, 6 rewards for ${email}.`);
+  console.log(
+    `Seeded 6 tasks (4 scheduled today), 2 budgets, 6 rewards for ${email}.`,
+  );
 }
 
 main()
